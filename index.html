@@ -1,0 +1,1878 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Suitcase — The Operating System for Modern Travel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="deck-stage.js"></script>
+<style>
+:root{
+  --ink:#0B1220;
+  --ink-2:#1A2233;
+  --ink-soft:#2C3447;
+  --line:#D9D1C0;
+  --line-soft:#E7E0D1;
+  --cream:#F4EFE6;
+  --paper:#FAF6EE;
+  --paper-2:#F7F2E8;
+  --muted:#7A7669;
+  --muted-2:#9A9484;
+  --accent:#E8643A;        /* coral */
+  --accent-soft:#F2C9B6;
+  --accent-ink:#A8401D;
+  --type-display: 96px;
+  --type-title: 64px;
+  --type-subtitle: 44px;
+  --type-lead: 36px;
+  --type-body: 30px;
+  --type-small: 24px;
+  --type-label: 20px;
+  --type-num: 168px;
+  --pad-x: 110px;
+  --pad-top: 88px;
+  --pad-bottom: 96px;
+  --gap-title: 56px;
+  --gap-item: 28px;
+}
+html,body{margin:0;padding:0;background:#0e0e0e;color:var(--ink);font-family:"Geist",ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+deck-stage{background:#0e0e0e;}
+section{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Geist",ui-sans-serif,system-ui,sans-serif;
+  overflow:hidden;
+  position:relative;
+}
+/* Generic slide wrapper */
+.slide{
+  width:100%;height:100%;
+  padding:var(--pad-top) var(--pad-x) var(--pad-bottom);
+  box-sizing:border-box;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+.slide.center{justify-content:center;align-items:flex-start;}
+.slide.dark{background:var(--ink);color:var(--cream);}
+.slide.dark .rule{background:rgba(244,239,230,.18);}
+.slide.dark .muted{color:#A9A496;}
+.slide.dark .meta{color:#807B6E;}
+.slide.dark .accent{color:var(--accent);}
+.slide.dark .pill{border-color:rgba(244,239,230,.22);color:#D7D2C4;}
+
+/* Type */
+.eyebrow{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:var(--type-label);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:500;
+}
+.eyebrow .dot{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--accent);margin-right:14px;transform:translateY(-2px);}
+.title{
+  font-family:"Instrument Serif", "Newsreader", Georgia, serif;
+  font-weight:400;
+  font-size:var(--type-title);
+  line-height:1.04;
+  letter-spacing:-.012em;
+  margin:0;
+  text-wrap:balance;
+}
+.title .it{font-style:italic;color:var(--accent);}
+.display{
+  font-family:"Instrument Serif", Georgia, serif;
+  font-weight:400;
+  font-size:var(--type-display);
+  line-height:1;
+  letter-spacing:-.018em;
+  margin:0;
+}
+.lead{font-size:var(--type-lead);line-height:1.28;font-weight:300;color:var(--ink-2);max-width:1380px;margin:0;}
+.body{font-size:var(--type-body);line-height:1.36;font-weight:400;color:var(--ink-2);}
+.small{font-size:var(--type-small);line-height:1.4;color:var(--muted);}
+.muted{color:var(--muted);}
+.accent{color:var(--accent);}
+.meta{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:var(--type-small);
+  color:var(--muted);
+  letter-spacing:.04em;
+}
+.tabular{font-variant-numeric:tabular-nums;}
+.rule{height:1px;background:var(--line);width:100%;}
+.rule.short{width:88px;height:2px;background:var(--ink);}
+.rule.short.accent{background:var(--accent);}
+
+/* Header / footer chrome */
+.chrome-top{
+  position:absolute;left:var(--pad-x);right:var(--pad-x);top:48px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--muted);
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.chrome-bot{
+  position:absolute;left:var(--pad-x);right:var(--pad-x);bottom:48px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--muted);
+  letter-spacing:.08em;
+}
+.brand-mark{display:flex;align-items:center;gap:14px;}
+.brand-mark .logo{
+  width:28px;height:28px;border-radius:6px;
+  background:var(--ink);position:relative;
+}
+.slide.dark .brand-mark .logo{background:var(--cream);}
+.brand-mark .logo::before{
+  content:"";position:absolute;left:6px;right:6px;top:9px;height:2px;background:var(--cream);
+}
+.slide.dark .brand-mark .logo::before{background:var(--ink);}
+.brand-mark .logo::after{
+  content:"";position:absolute;left:11px;top:3px;width:6px;height:5px;border:1.5px solid var(--ink);border-bottom:none;border-radius:3px 3px 0 0;
+}
+.slide.dark .brand-mark .logo::after{border-color:var(--cream);}
+.brand-mark .name{
+  font-family:"Instrument Serif",serif;font-style:italic;
+  font-size:24px;letter-spacing:.01em;color:var(--ink);text-transform:none;
+}
+.slide.dark .brand-mark .name{color:var(--cream);}
+
+/* Pills */
+.pill{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:8px 16px;border:1px solid var(--line);border-radius:999px;
+  font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--ink-soft);
+  letter-spacing:.04em;
+}
+
+/* Citations */
+.cite{font-family:"JetBrains Mono",monospace;font-size:16px;color:var(--muted);letter-spacing:.02em;}
+
+/* Common grid helpers */
+.row{display:flex;gap:48px;}
+.col{display:flex;flex-direction:column;gap:24px;}
+.spread{display:flex;justify-content:space-between;align-items:flex-end;}
+.kbd{font-family:"JetBrains Mono",monospace;}
+
+/* Section divider */
+.divider{
+  background:var(--ink);color:var(--cream);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 var(--pad-x);
+  position:relative;
+}
+.divider .num{
+  font-family:"Instrument Serif",serif;font-style:italic;
+  font-size:48px;color:var(--accent);
+}
+.divider .label{
+  font-family:"JetBrains Mono",monospace;font-size:22px;
+  letter-spacing:.32em;text-transform:uppercase;color:#A9A496;
+  margin-top:18px;
+}
+.divider .head{
+  font-family:"Instrument Serif",serif;font-size:128px;line-height:1;
+  letter-spacing:-.02em;margin-top:48px;max-width:1500px;
+}
+.divider .head .it{font-style:italic;color:var(--accent);}
+
+/* SLIDE 1 — COVER */
+.cover{background:var(--ink);color:var(--cream);padding:0;}
+.cover .inner{
+  width:100%;height:100%;
+  padding:var(--pad-top) var(--pad-x) var(--pad-bottom);
+  box-sizing:border-box;display:flex;flex-direction:column;
+  justify-content:space-between;
+  background:
+    radial-gradient(ellipse 70% 50% at 75% 30%, rgba(232,100,58,.10), transparent 60%),
+    linear-gradient(180deg,#0B1220 0%, #0B1220 60%, #0E1830 100%);
+}
+.cover .top{display:flex;justify-content:space-between;align-items:flex-start;}
+.cover .corner{font-family:"JetBrains Mono",monospace;font-size:24px;color:#A9A496;letter-spacing:.2em;text-transform:uppercase;line-height:1.6;}
+.cover .corner b{color:var(--cream);font-weight:500;}
+.cover h1{
+  font-family:"Instrument Serif",serif;font-weight:400;
+  font-size:148px;line-height:.96;letter-spacing:-.022em;
+  margin:0;color:var(--cream);max-width:1660px;
+  text-wrap:balance;
+}
+.cover h1 .it{font-style:italic;color:var(--accent);}
+.cover .sub{font-family:"Geist",sans-serif;font-weight:300;font-size:32px;line-height:1.4;color:#C7C2B5;max-width:980px;margin-top:32px;}
+.cover .footrow{display:flex;justify-content:space-between;align-items:flex-end;}
+.cover .meta-block{font-family:"JetBrains Mono",monospace;font-size:24px;color:#A9A496;letter-spacing:.12em;text-transform:uppercase;line-height:1.7;}
+.cover .meta-block b{color:var(--cream);font-weight:500;}
+
+/* SLIDE 2 — Vision */
+.three-stmts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--line);}
+.three-stmts > div{padding:48px 40px 0 0;border-right:1px solid var(--line);}
+.three-stmts > div:last-child{border-right:none;padding-right:0;padding-left:40px;}
+.three-stmts .lbl{font-family:"JetBrains Mono",monospace;font-size:18px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:36px;}
+.three-stmts .stmt{font-family:"Instrument Serif",serif;font-size:42px;line-height:1.2;letter-spacing:-.01em;}
+.three-stmts .stmt .it{font-style:italic;color:var(--accent);}
+
+/* SLIDE 3 — timeline */
+.timeline{position:relative;margin-top:64px;}
+.timeline .track{position:absolute;left:0;right:0;top:104px;height:1px;background:var(--line);}
+.timeline .phases{display:grid;grid-template-columns:1fr 1fr 1fr 1.2fr;gap:24px;}
+.timeline .ph{position:relative;padding-top:140px;padding-right:24px;}
+.timeline .ph .dot{position:absolute;left:0;top:96px;width:18px;height:18px;border-radius:99px;background:var(--paper);border:2px solid var(--ink);}
+.timeline .ph.now .dot{background:var(--accent);border-color:var(--accent);width:26px;height:26px;top:92px;box-shadow:0 0 0 8px rgba(232,100,58,.18);}
+.timeline .ph .yr{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--muted);letter-spacing:.08em;position:absolute;top:0;}
+.timeline .ph .nm{font-family:"Instrument Serif",serif;font-size:38px;line-height:1.1;margin:0 0 14px;}
+.timeline .ph.now .nm{color:var(--accent);}
+.timeline .ph .desc{font-size:22px;line-height:1.4;color:var(--ink-soft);}
+.timeline .ph .vendors{font-family:"JetBrains Mono",monospace;font-size:16px;color:var(--muted);margin-top:18px;letter-spacing:.04em;}
+.timeline .ph.now .vendors{color:var(--accent-ink);}
+.timeline .ph .era{position:absolute;top:32px;font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted-2);}
+
+/* SLIDE 4 — fragmentation web */
+.frag-stage{position:relative;height:560px;width:100%;margin-top:24px;}
+.frag-traveler{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:200px;height:200px;border-radius:99px;background:var(--ink);color:var(--cream);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:"Instrument Serif",serif;font-size:26px;line-height:1.1;text-align:center;z-index:5;
+  box-shadow:0 24px 60px rgba(11,18,32,.18);
+}
+.frag-traveler .lab{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.24em;text-transform:uppercase;color:#A9A496;margin-bottom:8px;}
+.frag-node{
+  position:absolute;
+  background:var(--paper);border:1px solid var(--line);
+  padding:8px 14px;border-radius:99px;
+  font-family:"Geist",sans-serif;font-size:17px;color:var(--ink);
+  white-space:nowrap;z-index:3;
+}
+.frag-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+/* SLIDE 5 — emotional cost personas */
+.persona-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);margin-top:56px;}
+.persona{padding:48px 32px 0 0;border-right:1px solid var(--line);}
+.persona:last-child{border-right:none;}
+.persona .num{font-family:"Instrument Serif",serif;font-style:italic;font-size:42px;color:var(--accent);}
+.persona .nm{font-family:"Instrument Serif",serif;font-size:36px;margin:24px 0 18px;}
+.persona .stk{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.persona .stkb{font-size:22px;line-height:1.36;color:var(--ink-2);}
+.persona-grid + .grid{margin-top:auto;}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;border-top:1px solid var(--line);padding-top:24px;margin-top:32px;}
+.stat-row .stat .n{font-family:"Instrument Serif",serif;font-size:60px;line-height:1;letter-spacing:-.01em;}
+.stat-row .stat .n .pct{font-size:32px;color:var(--muted);}
+.stat-row .stat .lab{font-size:18px;line-height:1.35;color:var(--ink-2);margin-top:10px;max-width:420px;}
+.stat-row .stat .src{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--muted);margin-top:6px;letter-spacing:.04em;}
+
+/* SLIDE 6 — matrix */
+.matrix{margin-top:48px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--paper);}
+.matrix .row{display:grid;grid-template-columns:280px repeat(6,1fr);gap:0;}
+.matrix .row + .row{border-top:1px solid var(--line);}
+.matrix .row.head{background:var(--paper-2);}
+.matrix .row.head .cell{font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:18px 16px;text-align:center;}
+.matrix .row.head .cell.suit{color:var(--accent);}
+.matrix .row.head .cell.lab{text-align:left;}
+.matrix .cell{padding:12px 12px;border-right:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink);min-height:48px;}
+.matrix .cell:last-child{border-right:none;}
+.matrix .cell.lab{justify-content:flex-start;font-family:"Instrument Serif",serif;font-size:22px;color:var(--ink);}
+.matrix .cell .own{width:14px;height:14px;border-radius:99px;background:var(--ink);}
+.matrix .cell .own.suit{background:var(--accent);box-shadow:0 0 0 6px rgba(232,100,58,.18);}
+.matrix .cell .none{width:14px;height:1px;background:var(--line);}
+
+/* SLIDE 7 — converging diagram */
+.converge{position:relative;height:480px;margin-top:24px;}
+.converge svg{position:absolute;inset:0;width:100%;height:100%;}
+.converge .src{position:absolute;font-family:"Geist",sans-serif;font-size:22px;background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:10px 18px;}
+.converge .core{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:var(--ink);color:var(--cream);
+  width:240px;height:240px;border-radius:99px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:"Instrument Serif",serif;font-size:30px;text-align:center;line-height:1.1;
+  box-shadow:0 24px 60px rgba(11,18,32,.18);
+}
+.converge .core .lab{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:#A9A496;margin-bottom:8px;}
+
+/* SLIDE 8 — flow */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:48px;}
+.flow .step{padding:0 24px 0 0;border-right:1px solid var(--line);position:relative;min-height:380px;}
+.flow .step:last-child{border-right:none;padding-right:0;}
+.flow .step .n{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.2em;color:var(--muted);}
+.flow .step .h{font-family:"Instrument Serif",serif;font-size:34px;line-height:1.1;margin:18px 0 16px;}
+.flow .step .d{font-size:20px;line-height:1.4;color:var(--ink-2);}
+.flow .step .m{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-top:24px;}
+.flow .arrow{position:absolute;right:-12px;top:8px;width:22px;height:22px;}
+
+/* SLIDE 9 — features 2x2 */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:32px;border-top:1px solid var(--line);border-left:1px solid var(--line);}
+.feat{padding:32px 40px 32px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;}
+.feat .lab{display:flex;align-items:baseline;gap:18px;}
+.feat .lab .num{font-family:"Instrument Serif",serif;font-style:italic;font-size:40px;color:var(--accent);}
+.feat .lab .nm{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);}
+.feat h3{font-family:"Instrument Serif",serif;font-size:36px;line-height:1.1;margin:14px 0 18px;font-weight:400;}
+.feat ul{margin:0;padding:0;list-style:none;}
+.feat ul li{font-size:21px;line-height:1.4;color:var(--ink-2);padding:10px 0;border-top:1px solid var(--line-soft);}
+.feat ul li:first-child{border-top:none;}
+
+/* SLIDE 10 — stacked spend chart */
+.chart-spend{display:flex;align-items:flex-end;gap:20px;margin-top:32px;height:560px;position:relative;}
+.spend-bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative;padding-bottom:120px;box-sizing:border-box;}
+.spend-bar .lab{position:absolute;left:0;right:0;bottom:60px;}
+.spend-bar .v{position:absolute;left:0;right:0;bottom:0;}
+.spend-bar .col{display:flex;flex-direction:column;border:1px solid var(--ink);border-bottom:none;}
+.spend-bar .seg{display:flex;align-items:center;justify-content:flex-start;padding:0 16px;color:var(--cream);font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.04em;border-bottom:1px solid rgba(244,239,230,.2);}
+.spend-bar .seg .pct{margin-left:auto;font-family:"Instrument Serif",serif;font-style:italic;font-size:24px;color:var(--cream);}
+.spend-bar .seg:last-child{border-bottom:none;}
+.spend-bar .lab-style{font-family:"JetBrains Mono",monospace;font-size:16px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;}
+.spend-bar .v-style{font-family:"Instrument Serif",serif;font-size:36px;line-height:1;}
+.spend-bar .v small{font-size:18px;color:var(--muted);font-family:"Geist",sans-serif;font-style:normal;letter-spacing:0;}
+.spend-bar.future .col{background:var(--accent);}
+.spend-bar.future .seg{border-bottom-color:rgba(11,18,32,.16);color:var(--ink);}
+.spend-bar.future .seg .pct{color:var(--ink);}
+.spend-bar.future .lab{color:var(--accent);}
+.spend-bar.now .col{background:var(--ink);}
+
+/* SLIDE 11 — coordination layer stack */
+.layer-stack{display:flex;flex-direction:column;gap:18px;margin-top:32px;}
+.layer{padding:32px 40px;border:1px solid var(--line);border-radius:6px;display:flex;justify-content:space-between;align-items:center;background:var(--paper);}
+.layer .l-lab{font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.layer .l-h{font-family:"Instrument Serif",serif;font-size:36px;margin:8px 0 0;font-weight:400;}
+.layer .l-r{font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--ink);letter-spacing:.06em;display:flex;gap:24px;flex-wrap:wrap;justify-content:flex-end;max-width:55%;}
+.layer.gap{
+  background:repeating-linear-gradient(135deg,var(--paper),var(--paper) 12px,var(--paper-2) 12px,var(--paper-2) 24px);
+  border:1.5px dashed var(--accent);min-height:160px;
+}
+.layer.gap .l-lab{color:var(--accent-ink);}
+.layer.gap .l-h{color:var(--accent);font-style:italic;}
+.layer.gap .l-r{color:var(--accent-ink);font-style:italic;}
+.layer.top{background:var(--ink);color:var(--cream);}
+.layer.top .l-lab{color:#A9A496;}
+
+/* SLIDE 12 — pyramid */
+.pyramid{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:32px;}
+.pyramid .tier{height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-radius:4px;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);}
+.pyramid .tier .nm{font-family:"Instrument Serif",serif;font-size:28px;}
+.pyramid .tier .nt{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.pyramid .t1{width:1200px;}
+.pyramid .t2{width:960px;background:#EAE2D0;}
+.pyramid .t3{width:720px;background:#1A2233;color:var(--cream);}
+.pyramid .t3 .nt{color:#A9A496;}
+.pyramid .t4{width:480px;background:var(--accent);color:var(--ink);border-color:var(--accent);}
+.pyramid .t4 .nt{color:var(--accent-ink);}
+
+/* SLIDE 13 — concentric rings */
+.rings{position:relative;width:720px;height:720px;margin:24px auto 0;}
+.ring{position:absolute;left:50%;top:50%;border-radius:99px;transform:translate(-50%,-50%);}
+.ring.r1{width:720px;height:720px;background:var(--paper-2);border:1px solid var(--line);}
+.ring.r2{width:520px;height:520px;background:#EAE2D0;border:1px solid var(--line);}
+.ring.r3{width:300px;height:300px;background:var(--accent);}
+.ring .lab{position:absolute;left:50%;transform:translateX(-50%);font-family:"Instrument Serif",serif;font-size:30px;text-align:center;}
+.ring.r1 .lab{top:34px;}
+.ring.r2 .lab{top:34px;}
+.ring.r3 .lab{top:50%;transform:translate(-50%,-50%);color:var(--ink);}
+.ring .sub{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:block;margin-top:6px;font-style:normal;}
+.ring.r3 .sub{color:var(--accent-ink);}
+
+/* SLIDE 14 — revenue 8 tiles */
+.rev-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:24px;}
+.rev{padding:32px 28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:240px;display:flex;flex-direction:column;}
+.rev .n{font-family:"Instrument Serif",serif;font-style:italic;font-size:32px;color:var(--accent);}
+.rev .h{font-family:"Instrument Serif",serif;font-size:26px;line-height:1.15;margin:10px 0 12px;font-weight:400;}
+.rev .d{font-size:18px;line-height:1.4;color:var(--ink-2);flex:1;}
+.rev .b{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);margin-top:14px;letter-spacing:.04em;}
+
+/* SLIDE 15 — monetization curve */
+.curve{position:relative;height:560px;margin-top:32px;border-left:1px solid var(--ink);border-bottom:1px solid var(--ink);}
+.curve svg{position:absolute;inset:0;width:100%;height:100%;}
+.curve .ax-x{position:absolute;left:0;right:0;bottom:-44px;display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--muted);letter-spacing:.06em;}
+.curve .ax-y{position:absolute;left:-180px;top:50%;transform:rotate(-90deg) translateX(50%);transform-origin:right center;font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;}
+.curve .ann{position:absolute;right:24px;top:32px;text-align:right;}
+.curve .ann .h{font-family:"Instrument Serif",serif;font-size:32px;color:var(--accent);font-style:italic;}
+.curve .ann .d{font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--accent-ink);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;}
+.curve .pt{position:absolute;width:14px;height:14px;border-radius:99px;background:var(--ink);transform:translate(-50%,-50%);}
+.curve .pt.now{background:var(--accent);box-shadow:0 0 0 8px rgba(232,100,58,.2);width:18px;height:18px;}
+
+/* SLIDE 17 — gift flow */
+.gift-flow{display:grid;grid-template-columns:1fr 32px 1fr 32px 1.4fr 32px 1fr;align-items:stretch;gap:0;margin-top:48px;}
+.gift-flow .node{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:32px 28px;display:flex;flex-direction:column;justify-content:center;min-height:220px;}
+.gift-flow .node.float{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+.gift-flow .node.float .nm{color:var(--accent);}
+.gift-flow .node.gain{background:var(--accent);color:var(--ink);border-color:var(--accent);}
+.gift-flow .node .lb{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.gift-flow .node.float .lb{color:#A9A496;}
+.gift-flow .node.gain .lb{color:var(--accent-ink);}
+.gift-flow .node .nm{font-family:"Instrument Serif",serif;font-size:32px;line-height:1.1;margin:12px 0;}
+.gift-flow .node .meta{font-size:18px;color:var(--ink-2);}
+.gift-flow .node.float .meta{color:#C7C2B5;}
+.gift-flow .arr{display:flex;align-items:center;justify-content:center;color:var(--muted);}
+
+/* SLIDE 18 — group registry table */
+.registry{margin-top:32px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--paper);}
+.registry .rrow{display:grid;grid-template-columns:90px 200px 180px 180px 1fr;}
+.registry .rrow + .rrow{border-top:1px solid var(--line);}
+.registry .rrow.head{background:var(--paper-2);}
+.registry .rrow.head .c{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:16px 20px;}
+.registry .c{padding:14px 20px;font-size:18px;color:var(--ink);border-right:1px solid var(--line-soft);}
+.registry .c:last-child{border-right:none;color:var(--muted);font-style:italic;}
+.registry .c.cat{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);}
+
+/* SLIDE 19 — roadmap */
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:32px;border-top:1px solid var(--line);}
+.rd{padding:36px 28px 24px 0;border-right:1px solid var(--line);position:relative;}
+.rd:last-child{border-right:none;padding-right:0;padding-left:28px;}
+.rd .ph{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.rd .nm{font-family:"Instrument Serif",serif;font-size:36px;line-height:1.05;margin:14px 0 24px;font-weight:400;}
+.rd .row{display:block;margin-top:18px;}
+.rd .row .lb{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.rd .row .v{font-size:20px;color:var(--ink);line-height:1.35;margin-top:6px;}
+.rd.future .nm{color:var(--accent);font-style:italic;}
+.rd.future{background:linear-gradient(180deg,rgba(232,100,58,.06),transparent 70%);}
+
+/* SLIDE 20 — split */
+.split{display:grid;grid-template-columns:1fr 1px 1fr;gap:0;margin-top:48px;}
+.split .vline{background:var(--line);}
+.split .side{padding:32px 56px;}
+.split .side.right{padding-left:56px;}
+.split .side .lb{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.split .side .h{font-family:"Instrument Serif",serif;font-size:48px;line-height:1.05;margin:24px 0 24px;font-weight:400;}
+.split .side .logos{font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--muted);line-height:1.8;letter-spacing:.06em;}
+.split .side.right .h{color:var(--accent);font-style:italic;}
+.split .side.right .logos{color:var(--accent-ink);font-style:italic;font-family:"Instrument Serif",serif;font-size:32px;}
+
+/* SLIDE 22 — closing */
+.closing{background:var(--ink);color:var(--cream);padding:0;}
+.closing .inner{
+  width:100%;height:100%;
+  padding:var(--pad-top) var(--pad-x) var(--pad-bottom);
+  box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;
+  background:radial-gradient(ellipse 80% 60% at 30% 70%, rgba(232,100,58,.10), transparent 60%);
+}
+.closing h2{font-family:"Instrument Serif",serif;font-weight:400;font-size:128px;line-height:1;letter-spacing:-.02em;margin:0;color:var(--cream);max-width:1660px;}
+.closing h2 .it{font-style:italic;color:var(--accent);}
+.closing .tag{font-family:"Instrument Serif",serif;font-style:italic;font-size:48px;color:#C7C2B5;margin-top:48px;}
+.closing .recap{display:grid;grid-template-columns:repeat(6,1fr);gap:24px;font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:#807B6E;border-top:1px solid rgba(244,239,230,.2);padding-top:24px;}
+.closing .recap span b{display:block;color:var(--cream);margin-top:8px;font-weight:500;font-size:18px;}
+
+/* SLIDE 23 — Suitcase 2.0 */
+.two-zero{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:32px;}
+.two-zero .card{padding:36px 36px;border:1px solid var(--line);border-radius:6px;background:var(--paper);}
+.two-zero .card.right{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+.two-zero .card .v{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.two-zero .card.right .v{color:#A9A496;}
+.two-zero .card h3{font-family:"Instrument Serif",serif;font-size:42px;line-height:1.05;margin:14px 0 24px;font-weight:400;}
+.two-zero .card.right h3{color:var(--accent);font-style:italic;}
+.two-zero .card ul{margin:0;padding:0;list-style:none;}
+.two-zero .card ul li{font-size:21px;line-height:1.4;padding:12px 0;border-top:1px solid var(--line-soft);color:var(--ink-2);}
+.two-zero .card.right ul li{border-top-color:rgba(244,239,230,.16);color:#D7D2C4;}
+.two-zero .card ul li:first-child{border-top:none;}
+
+/* helpers */
+.flex-spacer{flex:1;}
+.maxw-1500{max-width:1500px;}
+.maxw-1300{max-width:1300px;}
+.maxw-1100{max-width:1100px;}
+</style>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+<!-- ============== 1 / COVER ============== -->
+<section data-screen-label="01 Cover" class="cover">
+  <div class="inner">
+    <div class="top">
+      <div class="brand-mark">
+        <span class="logo"></span>
+        <span class="name" style="font-size:28px;color:var(--cream);">Suitcase</span>
+      </div>
+      <div class="corner" style="text-align:right;">
+        <div>Pre‑seed · Investor Memorandum</div>
+        <div><b>v1.0 · May 2026</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="color:#A9A496;"><span class="dot"></span>The Coordination Thesis</div>
+      <h1 style="margin-top:36px;">The Operating System<br>for <span class="it">Modern Travel</span>.</h1>
+      <p class="sub">Travel went digital. Coordination didn't. Suitcase is the intelligent layer above flights, hotels, dining and mobility — turning a fragmented industry into one continuous experience.</p>
+    </div>
+
+    <div class="footrow">
+      <div class="meta-block">
+        <div>Founders</div>
+        <div><b>—— Founder Name</b></div>
+        <div><b>—— Founder Name</b></div>
+      </div>
+      <div class="meta-block" style="text-align:right;">
+        <div>Confidential</div>
+        <div><b>For invited audience only</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 2 / VISION ============== -->
+<section data-screen-label="02 Vision &amp; Mission">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 0 · Vision &amp; Mission</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Our thesis, in three sentences</div>
+    <h2 class="title" style="margin-top:32px;max-width:1500px;">We simplify complex travel<br>into one <span class="it">seamless journey</span>.</h2>
+
+    <div class="flex-spacer"></div>
+
+    <div class="three-stmts">
+      <div>
+        <div class="lbl">— Vision</div>
+        <div class="stmt">A world where travel <span class="it">coordinates itself.</span></div>
+      </div>
+      <div>
+        <div class="lbl">— Mission</div>
+        <div class="stmt">Replace the dozen tools every traveler juggles with one intelligent layer.</div>
+      </div>
+      <div>
+        <div class="lbl">— Positioning</div>
+        <div class="stmt">The coordination layer above modern travel — fragmented services, one experience.</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>02 / 23</div>
+      <div>Suitcase · Investor Memo</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 3 / WHY NOW — TIMELINE ============== -->
+<section data-screen-label="03 Why Now">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 0 · Why Now</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Twenty‑five years of travel evolution</div>
+    <h2 class="title" style="margin-top:32px;max-width:1500px;">Travel went digital —<br><span class="it">coordination never did.</span></h2>
+
+    <div class="timeline">
+      <div class="track"></div>
+      <div class="phases">
+        <div class="ph">
+          <div class="era">Era I</div>
+          <div class="yr">pre‑2000</div>
+          <div class="dot"></div>
+          <div class="nm">Offline travel</div>
+          <div class="desc">Travel agents and brochures. The traveler hands the work to a human coordinator.</div>
+          <div class="vendors">AGENTS · BROCHURES · CALL CENTERS</div>
+        </div>
+        <div class="ph">
+          <div class="era">Era II</div>
+          <div class="yr">2000 – 2015</div>
+          <div class="dot"></div>
+          <div class="nm">OTA digitization</div>
+          <div class="desc">Inventory moves online. Booking, Expedia and Kayak digitize search and reservation.</div>
+          <div class="vendors">OTAs · METASEARCH · PRICE COMPARISON</div>
+        </div>
+        <div class="ph">
+          <div class="era">Era III</div>
+          <div class="yr">2015 – 2024</div>
+          <div class="dot"></div>
+          <div class="nm">Multi‑app fragmentation</div>
+          <div class="desc">A dozen vertical apps own a sliver of the trip each. The traveler stitches them together.</div>
+          <div class="vendors">12+ APPS PER TRIP · NO HANDOFF</div>
+        </div>
+        <div class="ph now">
+          <div class="era" style="color:var(--accent-ink);">Era IV — now</div>
+          <div class="yr" style="color:var(--accent-ink);">2024 +</div>
+          <div class="dot"></div>
+          <div class="nm">AI orchestration</div>
+          <div class="desc">Integrations and language models make end‑to‑end coordination commercially viable. The gap Suitcase fills.</div>
+          <div class="vendors">SUITCASE · ORCHESTRATION LAYER</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div class="stat-row" style="margin-top:64px;">
+      <div class="stat">
+        <div class="n tabular">73<span class="pct">%</span></div>
+        <div class="lab">of global travel revenue will be online by 2029, up from 69% in 2024.</div>
+        <div class="src">— Mize, 2025</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">75<span class="pct">%</span></div>
+        <div class="lab">of Gen Z and 66% of Millennials have already used AI tools to plan travel.</div>
+        <div class="src">— WSU Carson College, 2024</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">36<span class="pct">% CAGR</span></div>
+        <div class="lab">growth in the AI‑in‑Travel market — the enabler of orchestration.</div>
+        <div class="src">— Market.us, 2025</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>03 / 23</div>
+      <div>Required chart · Industry evolution timeline</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 4 / FRAGMENTATION ============== -->
+<section data-screen-label="04 Fragmentation">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 1 · The Problem</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>The integration layer is human</div>
+    <h2 class="title" style="margin-top:32px;max-width:1500px;">Travelers became the <span class="it">integration layer.</span></h2>
+
+    <div class="frag-stage">
+      <svg class="frag-svg" viewBox="0 0 1700 560" preserveAspectRatio="none">
+        <g stroke="#C9C2B0" stroke-width="1" fill="none" stroke-dasharray="3 6">
+          <path d="M850,280 L160,80"/><path d="M850,280 L520,60"/><path d="M850,280 L900,50"/>
+          <path d="M850,280 L1280,60"/><path d="M850,280 L1620,100"/><path d="M850,280 L1640,300"/>
+          <path d="M850,280 L1580,470"/><path d="M850,280 L1180,500"/><path d="M850,280 L760,510"/>
+          <path d="M850,280 L380,500"/><path d="M850,280 L100,460"/><path d="M850,280 L80,260"/>
+        </g>
+      </svg>
+
+      <div class="frag-traveler">
+        <div class="lab">— The traveler</div>
+        <div>Stitches it<br>together. Alone.</div>
+      </div>
+
+      <div class="frag-node" style="left:60px;top:60px;">Skyscanner — flights</div>
+      <div class="frag-node" style="left:430px;top:36px;">Booking — hotels</div>
+      <div class="frag-node" style="left:820px;top:24px;">Airbnb — stays</div>
+      <div class="frag-node" style="left:1180px;top:36px;">Uber — mobility</div>
+      <div class="frag-node" style="left:1500px;top:80px;">OpenTable — dining</div>
+      <div class="frag-node" style="left:1560px;top:280px;">Resy — reservations</div>
+      <div class="frag-node" style="left:1500px;top:460px;">TripAdvisor — reviews</div>
+      <div class="frag-node" style="left:1100px;top:500px;">Google Maps</div>
+      <div class="frag-node" style="left:720px;top:512px;">Citymapper</div>
+      <div class="frag-node" style="left:340px;top:500px;">XE — currency</div>
+      <div class="frag-node" style="left:60px;top:450px;">Revolut — payments</div>
+      <div class="frag-node" style="left:10px;top:250px;">WhatsApp</div>
+    </div>
+
+    <div class="stat-row" style="margin-top:auto;">
+      <div class="stat">
+        <div class="n tabular">18 hrs</div>
+        <div class="lab">spent researching, comparing and booking a single trip.</div>
+        <div class="src">— Go City / Talker Research, n=2,000 (2024)</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">141 pages</div>
+        <div class="lab">viewed on average — up to 277 in the UK and US — over 5+ hours of content.</div>
+        <div class="src">— Expedia Group, Path to Purchase</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">76<span class="pct">%</span></div>
+        <div class="lab">of global travelers actively seek apps that reduce travel friction.</div>
+        <div class="src">— Priori Data, 2024</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>04 / 23</div>
+      <div>The traveler is the missing API</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 5 / EMOTIONAL COST ============== -->
+<section data-screen-label="05 Emotional Cost">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 1 · Emotional Cost</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>The cost is felt, not just measured</div>
+    <h2 class="title" style="margin-top:32px;max-width:1600px;">Travel stress destroys<br><span class="it">high‑value experiences.</span></h2>
+
+    <p class="lead" style="margin-top:32px;max-width:1400px;">Coordination fatigue, fear of mistakes, and uncertainty erode the very experiences travelers paid the most to enjoy.</p>
+
+    <div class="persona-grid">
+      <div class="persona">
+        <div class="num">01</div>
+        <div class="nm">Couples</div>
+        <div class="stk">— Stakes</div>
+        <div class="stkb">Anniversaries and milestones. One missed reservation can sour a year of anticipation.</div>
+      </div>
+      <div class="persona">
+        <div class="num">02</div>
+        <div class="nm">Families</div>
+        <div class="stk">— Stakes</div>
+        <div class="stkb">Kids, schedules, dietary needs. One logistical breakdown ruins a vacation.</div>
+      </div>
+      <div class="persona">
+        <div class="num">03</div>
+        <div class="nm">Gift recipients</div>
+        <div class="stk">— Stakes</div>
+        <div class="stkb">Receiving a trip from someone else. Pressure to honor the gesture.</div>
+      </div>
+      <div class="persona">
+        <div class="num">04</div>
+        <div class="nm">Infrequent travelers</div>
+        <div class="stk">— Stakes</div>
+        <div class="stkb">High spend, once or twice a year, on something they don't know how to optimize.</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="n tabular">47<span class="pct">%</span></div>
+        <div class="lab">say less planning time would mean less life stress overall.</div>
+        <div class="src">— Priceline / Harris Poll</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">20<span class="pct">%</span></div>
+        <div class="lab">say it would reduce stress in their relationships.</div>
+        <div class="src">— Priceline / Harris Poll</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">76<span class="pct">%</span></div>
+        <div class="lab">seek apps that explicitly reduce friction and stress while traveling.</div>
+        <div class="src">— Priori Data, 2024</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>05 / 23</div>
+      <div>Orchestration is an emotional product, not a logistical one</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 6 / INDUSTRY GAP — MATRIX ============== -->
+<section data-screen-label="06 Industry Gap">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 1 · Industry Gap</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Each incumbent owns one row</div>
+    <h2 class="title" style="margin-top:32px;max-width:1600px;">The industry optimizes bookings —<br><span class="it">not entire trips.</span></h2>
+
+    <div class="matrix">
+      <div class="row head">
+        <div class="cell lab">Vertical</div>
+        <div class="cell">Booking.com</div>
+        <div class="cell">Skyscanner</div>
+        <div class="cell">Uber</div>
+        <div class="cell">OpenTable</div>
+        <div class="cell">Klook</div>
+        <div class="cell suit">SUITCASE</div>
+      </div>
+      <div class="row">
+        <div class="cell lab">Accommodation</div>
+        <div class="cell"><span class="own"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+      </div>
+      <div class="row">
+        <div class="cell lab">Flights</div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+      </div>
+      <div class="row">
+        <div class="cell lab">Mobility</div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+      </div>
+      <div class="row">
+        <div class="cell lab">Dining</div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+      </div>
+      <div class="row">
+        <div class="cell lab">Activities</div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own"></span></div>
+        <div class="cell"><span class="own"></span></div>
+      </div>
+      <div class="row" style="background:#FBE9DF;">
+        <div class="cell lab" style="color:var(--accent-ink);font-style:italic;">Coordination</div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="none"></span></div>
+        <div class="cell"><span class="own suit"></span></div>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div style="display:flex;gap:48px;align-items:flex-end;justify-content:space-between;border-top:1px solid var(--line);padding-top:24px;margin-top:32px;">
+      <div class="small" style="max-width:520px;">OTAs hold <b style="color:var(--ink);">68.1%</b> of online booking share. Booking.com alone clocked <b style="color:var(--ink);">74.6M</b> app downloads in 2024.</div>
+      <div class="small" style="max-width:520px;">The closest planning competitor, Mindtrip, raised <b style="color:var(--ink);">$20.5M+</b> from Costanoa, Forerunner, Amex, Capital One and United — and still only owns the planning vertical.</div>
+      <div class="cite" style="text-align:right;">— Future Market Insights, 2025<br>— Skift, PhocusWire</div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>06 / 23</div>
+      <div>There is no coordination owner</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 7 / PRODUCT INTRODUCTION ============== -->
+<section data-screen-label="07 Product Intro">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 2 · The Product</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>One product, in one sentence</div>
+    <h2 class="title" style="margin-top:32px;max-width:1600px;">Suitcase connects every part<br>of the <span class="it">travel experience.</span></h2>
+
+    <div class="converge">
+      <svg viewBox="0 0 1700 480" preserveAspectRatio="none">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0B1220"/>
+          </marker>
+        </defs>
+        <g stroke="#0B1220" stroke-width="1.2" fill="none" marker-end="url(#ah)">
+          <path d="M210,80 C500,140 650,210 820,240"/>
+          <path d="M210,240 C500,240 650,240 820,240"/>
+          <path d="M210,400 C500,340 650,280 820,240"/>
+          <path d="M1490,80 C1200,140 1050,210 880,240"/>
+          <path d="M1490,240 C1200,240 1050,240 880,240"/>
+          <path d="M1490,400 C1200,340 1050,280 880,240"/>
+        </g>
+      </svg>
+      <div class="src" style="left:40px;top:60px;">Flights</div>
+      <div class="src" style="left:40px;top:222px;">Hotels &amp; stays</div>
+      <div class="src" style="left:40px;top:382px;">Mobility</div>
+      <div class="src" style="right:40px;top:60px;">Dining &amp; reservations</div>
+      <div class="src" style="right:40px;top:222px;">Activities &amp; tours</div>
+      <div class="src" style="right:40px;top:382px;">Budget &amp; payments</div>
+      <div class="core">
+        <div class="lab">— Suitcase</div>
+        <div>Coordination<br>engine</div>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top:auto;max-width:1500px;">An intelligent layer that orchestrates flights, hotels, dining, mobility and activities into one continuous, budget‑aware experience. Not a booking site. Not a planner. The coordination layer.</p>
+
+    <div class="chrome-bot">
+      <div>07 / 23</div>
+      <div>Orchestration · not aggregation</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 8 / HOW IT WORKS ============== -->
+<section data-screen-label="08 How It Works">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 2 · How It Works</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>From input to journey, in five steps</div>
+    <h2 class="title" style="margin-top:32px;max-width:1500px;">One intelligent flow across<br>the <span class="it">entire journey.</span></h2>
+
+    <div class="flow">
+      <div class="step">
+        <div class="n">— Step 01</div>
+        <div class="h">Input</div>
+        <div class="d">Destination, dates and budget range. Plain language, voice or form.</div>
+        <div class="m">User intent</div>
+      </div>
+      <div class="step">
+        <div class="n">— Step 02</div>
+        <div class="h">Aggregate</div>
+        <div class="d">Suitcase pulls flights, accommodation, dining, mobility and activities across the network.</div>
+        <div class="m">Live inventory</div>
+      </div>
+      <div class="step">
+        <div class="n">— Step 03</div>
+        <div class="h">Optimize</div>
+        <div class="d">AI fits the trip to budget, preferences and logistics — not the other way around.</div>
+        <div class="m">Itinerary engine</div>
+      </div>
+      <div class="step">
+        <div class="n">— Step 04</div>
+        <div class="h">Coordinate</div>
+        <div class="d">The layer manages bookings, timing and real‑time adjustments across vendors.</div>
+        <div class="m">Continuity</div>
+      </div>
+      <div class="step">
+        <div class="n">— Step 05</div>
+        <div class="h">Experience</div>
+        <div class="d">One app, one budget, one journey. The traveler stops being the integration layer.</div>
+        <div class="m">Unified view</div>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding-top:24px;">
+      <p class="body" style="max-width:1100px;">Frictionless and intuitive — the technical machinery (integrations, models, payments rails) is deliberately invisible to the traveler.</p>
+      <div class="meta">— Architecture details available on request</div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>08 / 23</div>
+      <div>Five steps · one flow</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 9 / CORE FEATURES ============== -->
+<section data-screen-label="09 Core Features">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 2 · Core Features</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Four jobs, one platform</div>
+    <h2 class="title" style="margin-top:32px;max-width:1660px;">Coordination, intelligence, convenience<br>and assurance — in <span class="it">one platform.</span></h2>
+
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="lab"><span class="num">01</span><span class="nm">— Coordination</span></div>
+        <h3>Multi‑service orchestration across the trip.</h3>
+        <ul>
+          <li>Multi‑service itinerary orchestration.</li>
+          <li>Cross‑vendor logistics &amp; timing.</li>
+          <li>Group split &amp; shared planning.</li>
+        </ul>
+      </div>
+      <div class="feat">
+        <div class="lab"><span class="num">02</span><span class="nm">— Intelligence</span></div>
+        <h3>Itineraries that fit the wallet, not the other way around.</h3>
+        <ul>
+          <li>Budget‑locked itinerary generation.</li>
+          <li>Preference learning across trips.</li>
+          <li>Real‑time pricing &amp; availability adjustments.</li>
+        </ul>
+      </div>
+      <div class="feat">
+        <div class="lab"><span class="num">03</span><span class="nm">— Convenience</span></div>
+        <h3>One tap to book, one inbox to manage.</h3>
+        <ul>
+          <li>One‑tap full‑trip booking.</li>
+          <li>Unified inbox for all confirmations.</li>
+          <li>On‑trip cancellation &amp; re‑routing.</li>
+        </ul>
+      </div>
+      <div class="feat">
+        <div class="lab"><span class="num">04</span><span class="nm">— Assurance</span></div>
+        <h3>Confidence priced into every itinerary.</h3>
+        <ul>
+          <li>Embedded travel insurance (Premium).</li>
+          <li>Penalty‑free changes where possible.</li>
+          <li>Verified vendor network.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>09 / 23</div>
+      <div>Reduced friction · reduced uncertainty</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 10 / MARKET SIZE — STACKED ============== -->
+<section data-screen-label="10 Market Size">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 3 · Market Opportunity</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Massive, growing, fragmented</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">Global travel spend is massive —<br>and increasingly <span class="it">fragmented.</span></h2>
+
+    <div class="chart-spend">
+      <div class="spend-bar now">
+        <div class="col" style="height:36%;">
+          <div class="seg" style="height:38%;">Accommodation <span class="pct">31%</span></div>
+          <div class="seg" style="height:22%;">Flights <span class="pct">26%</span></div>
+          <div class="seg" style="height:16%;">Dining <span class="pct">18%</span></div>
+          <div class="seg" style="height:14%;">Activities <span class="pct">14%</span></div>
+          <div class="seg" style="height:10%;">Mobility <span class="pct">11%</span></div>
+        </div>
+        <div class="lab lab-style">2025 — global online travel</div>
+        <div class="v v-style">$622B<small> · across 5 fragmented pools</small></div>
+      </div>
+
+      <div class="spend-bar future">
+        <div class="col" style="height:80%;">
+          <div class="seg" style="height:38%;">Accommodation <span class="pct">31%</span></div>
+          <div class="seg" style="height:22%;">Flights <span class="pct">26%</span></div>
+          <div class="seg" style="height:16%;">Dining <span class="pct">18%</span></div>
+          <div class="seg" style="height:14%;">Activities <span class="pct">14%</span></div>
+          <div class="seg" style="height:10%;">Mobility <span class="pct">11%</span></div>
+        </div>
+        <div class="lab lab-style">2034 — projection (IMARC)</div>
+        <div class="v v-style">$1.4T<small> · the orchestration market</small></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;border-top:1px solid var(--line);padding-top:24px;margin-top:48px;">
+      <div>
+        <div class="meta">— European online travel</div>
+        <div style="font-family:Instrument Serif,serif;font-size:36px;margin-top:6px;">$104B → $158B</div>
+        <div class="cite" style="margin-top:6px;">8.8% CAGR · Phocuswright / Mize</div>
+      </div>
+      <div>
+        <div class="meta">— Europe travel‑app revenue</div>
+        <div style="font-family:Instrument Serif,serif;font-size:36px;margin-top:6px;">40% of global</div>
+        <div class="cite" style="margin-top:6px;">Priori Data, 2024</div>
+      </div>
+      <div>
+        <div class="meta">— Experience gift market</div>
+        <div style="font-family:Instrument Serif,serif;font-size:36px;margin-top:6px;">$133B → $199B</div>
+        <div class="cite" style="margin-top:6px;">Deep Market Insights, 2024–2030</div>
+      </div>
+      <div>
+        <div class="meta">— Mobile booking growth (EU)</div>
+        <div style="font-family:Instrument Serif,serif;font-size:36px;margin-top:6px;">+13.8%/yr</div>
+        <div class="cite" style="margin-top:6px;">Mize, 2025</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>10 / 23</div>
+      <div>Required chart · Stacked spend distribution</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 11 / COORDINATION GAP ============== -->
+<section data-screen-label="11 Coordination Gap">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 3 · Coordination Gap</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>The strategic vacuum</div>
+    <h2 class="title" style="margin-top:32px;max-width:1660px;">No company owns the coordination layer<br>between <span class="it">travel services.</span></h2>
+
+    <div class="layer-stack">
+      <div class="layer top">
+        <div>
+          <div class="l-lab">— Top layer · the traveler</div>
+          <div class="l-h" style="color:var(--cream);">Currently doing the work themselves.</div>
+        </div>
+        <div class="l-r" style="color:#A9A496;">18 hours · 141 pages · 5+ hours of content per trip</div>
+      </div>
+      <div class="layer gap">
+        <div>
+          <div class="l-lab">— Middle layer · unclaimed</div>
+          <div class="l-h">Coordination layer — unclaimed.</div>
+        </div>
+        <div class="l-r">No incumbent · no challenger · no orchestration owner</div>
+      </div>
+      <div class="layer">
+        <div>
+          <div class="l-lab">— Bottom layer · inventory</div>
+          <div class="l-h">Bookings became digital.</div>
+        </div>
+        <div class="l-r">Booking · Skyscanner · Airbnb · Uber · OpenTable · Klook</div>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;border-top:1px solid var(--line);padding-top:24px;">
+      <div class="body">The traveler still spends <b>18 hours</b> stitching this together per trip.<div class="cite">— Go City, 2024</div></div>
+      <div class="body">Mindtrip raised <b>$20.5M+</b> but does not own coordination across booking and on‑location.<div class="cite">— Skift, PhocusWire</div></div>
+      <div class="body">Layla.ai has generated <b>1.1M+</b> trips — planner only, no execution layer.<div class="cite">— Layla, 2025</div></div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>11 / 23</div>
+      <div>Category creation begins here</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 12 / WILLINGNESS TO PAY — PYRAMID ============== -->
+<section data-screen-label="12 Willingness To Pay">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 3 · Willingness To Pay</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Travelers already pay for certainty</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">Travelers already pay premiums<br>to <span class="it">reduce uncertainty.</span></h2>
+
+    <div class="pyramid">
+      <div class="tier t4">
+        <span class="nm" style="font-style:italic;">Full orchestration</span>
+        <span class="nt">Suitcase territory · highest margin</span>
+      </div>
+      <div class="tier t3">
+        <span class="nm">Assurance</span>
+        <span class="nt">Insurance · flexibility · premium margin</span>
+      </div>
+      <div class="tier t2">
+        <span class="nm">Convenience</span>
+        <span class="nt">Bundles · concierge · moderate margin</span>
+      </div>
+      <div class="tier t1">
+        <span class="nm">Basic booking</span>
+        <span class="nt">Commoditized · low margin</span>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="n tabular">82<span class="pct">%</span></div>
+        <div class="lab">value experiences over physical objects.</div>
+        <div class="src">— Amex Global Travel, n=12,000 (2026)</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">74<span class="pct">%</span></div>
+        <div class="lab">of Gen Z want to bundle reservations and services.</div>
+        <div class="src">— Hilton</div>
+      </div>
+      <div class="stat">
+        <div class="n tabular">+35<span class="pct">%</span></div>
+        <div class="lab">CAC inflation '22→'25 vs. only +4.5% LTV — proof the industry is paying more for the same customer.</div>
+        <div class="src">— Adobe / Publicis Sapient via PhocusWire</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>12 / 23</div>
+      <div>Required chart · Consumer value pyramid</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 13 / MARKET EXPANSION — RINGS ============== -->
+<section data-screen-label="13 Market Expansion">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 3 · Market Expansion</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Beyond solo leisure</div>
+    <h2 class="title" style="margin-top:32px;max-width:1600px;">The opportunity extends beyond<br><span class="it">solo leisure travel.</span></h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:24px;flex:1;">
+      <div>
+        <div class="rings" style="width:560px;height:560px;margin:0;">
+          <div class="ring r1" style="width:560px;height:560px;">
+            <span class="lab">Group &amp; gifted travel<span class="sub">— TAM · outermost</span></span>
+          </div>
+          <div class="ring r2" style="width:400px;height:400px;">
+            <span class="lab">Premium / milestone<span class="sub">— Honeymoons, anniversaries</span></span>
+          </div>
+          <div class="ring r3" style="width:220px;height:220px;">
+            <span class="lab" style="font-size:22px;">Leisure<span class="sub">— Core</span></span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ul style="list-style:none;margin:0;padding:0;border-top:1px solid var(--line);">
+          <li style="padding:22px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Family travel</span>
+            <span class="meta">Schedules · dietary · multi‑pax</span>
+          </li>
+          <li style="padding:22px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Group travel</span>
+            <span class="meta">Native split · viral acquisition</span>
+          </li>
+          <li style="padding:22px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Gifted travel</span>
+            <span class="meta">2 users per gift · float captured</span>
+          </li>
+          <li style="padding:22px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Premium / high‑intent</span>
+            <span class="meta">Honeymoons · milestones</span>
+          </li>
+          <li style="padding:22px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Event‑driven leisure</span>
+            <span class="meta">Weddings · concerts · fixtures</span>
+          </li>
+        </ul>
+        <p class="cite" style="margin-top:24px;">66% plan a milestone trip for someone else in 2026 (Amex). EU destination wedding market $9.9M → $56.3M by 2033 (Pretty Amazing Things). 76% of Gen Z + Millennials plan group or solo trips in 2025 (Statista).</p>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>13 / 23</div>
+      <div>Required chart · TAM expansion rings</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 14 / REVENUE MODEL ============== -->
+<section data-screen-label="14 Revenue Model">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 4 · Business Model</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Eight streams · one platform</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">Multiple revenue streams drive<br><span class="it">platform monetization.</span></h2>
+
+    <div class="rev-grid">
+      <div class="rev">
+        <div class="n">01</div>
+        <div class="h">State tourism partnerships</div>
+        <div class="d">Paid destination promotion targeted at travelers without a destination yet. Agencies compete for guests inside the platform.</div>
+        <div class="b">Suitcase monetizes the intent layer.</div>
+      </div>
+      <div class="rev">
+        <div class="n">02</div>
+        <div class="h">Advertising</div>
+        <div class="d">Contextual in‑app placements. Automatically suppressed for Premium subscribers.</div>
+        <div class="b">Auto‑off in Premium · ad‑free SKU</div>
+      </div>
+      <div class="rev">
+        <div class="n">03</div>
+        <div class="h">Premium subscription</div>
+        <div class="d">Annual SKU. Ad‑free, priority access, embedded insurance, partner discounts.</div>
+        <div class="b">Recurring · high‑intent users</div>
+      </div>
+      <div class="rev">
+        <div class="n">04</div>
+        <div class="h">Float on deposits</div>
+        <div class="d">Next‑day supplier settlement at volume‑discounted rates. On gifts, float held across the entire purchase‑to‑activation window.</div>
+        <div class="b">Spread captured · CAC‑deflationary on gifts</div>
+      </div>
+      <div class="rev">
+        <div class="n">05</div>
+        <div class="h">Booking commissions</div>
+        <div class="d">Commission across flights, accommodation, dining, mobility, activities.</div>
+        <div class="b">Benchmark: Booking 15% (10–25%); Expedia 15–30%</div>
+      </div>
+      <div class="rev">
+        <div class="n">06</div>
+        <div class="h">Assurance fees</div>
+        <div class="d">Travel insurance, flexibility add‑ons, change‑protection upsells priced into the itinerary.</div>
+        <div class="b">High‑margin · sold at peak intent</div>
+      </div>
+      <div class="rev">
+        <div class="n">07</div>
+        <div class="h">Partnerships</div>
+        <div class="d">Loyalty integrations, co‑branded experiences, vendor placement.</div>
+        <div class="b">Strategic distribution · lifetime hooks</div>
+      </div>
+      <div class="rev">
+        <div class="n">08</div>
+        <div class="h">API monetization (future)</div>
+        <div class="d">License the Suitcase coordination engine to other platforms — supply meets demand on Suitcase rails.</div>
+        <div class="b">Phase 3+ · infrastructure economics</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>14 / 23</div>
+      <div>Diversified · scalable · flexible</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 15 / UNIT ECONOMICS — CURVE ============== -->
+<section data-screen-label="15 Unit Economics">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 4 · Unit Economics</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>The more we coordinate, the more we earn</div>
+    <h2 class="title" style="margin-top:32px;max-width:1660px;">Trip complexity increases<br><span class="it">monetization potential.</span></h2>
+
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:64px;margin-top:32px;flex:1;">
+      <div>
+        <div class="curve">
+          <svg viewBox="0 0 800 480" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="cg" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#E8643A" stop-opacity=".22"/>
+                <stop offset="100%" stop-color="#E8643A" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,440 C140,420 260,400 380,340 C500,280 600,180 800,40 L800,480 L0,480 Z" fill="url(#cg)"/>
+            <path d="M0,440 C140,420 260,400 380,340 C500,280 600,180 800,40" stroke="#0B1220" stroke-width="2" fill="none"/>
+            <line x1="0" y1="240" x2="800" y2="240" stroke="#D9D1C0" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="400" y1="0" x2="400" y2="480" stroke="#D9D1C0" stroke-width="1" stroke-dasharray="4 4"/>
+          </svg>
+          <div class="pt" style="left:8%;bottom:9%;"></div>
+          <div class="pt" style="left:50%;top:30%;"></div>
+          <div class="pt now" style="right:2%;top:8%;"></div>
+          <div class="ann">
+            <div class="h">Suitcase territory</div>
+            <div class="d">— Fully orchestrated multi‑day</div>
+          </div>
+          <div class="ax-x">
+            <span>Single booking</span>
+            <span>Multi‑service bundle</span>
+            <span>Fully orchestrated multi‑day</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-left:1px solid var(--line);padding-left:48px;">
+        <div class="meta">— Modeled UK couple city break, 4 nights</div>
+        <div style="font-family:Instrument Serif,serif;font-size:64px;line-height:1;margin-top:16px;">£1,650</div>
+        <div class="small" style="margin-top:6px;">on‑the‑ground spend per trip</div>
+
+        <div style="border-top:1px solid var(--line);margin-top:32px;padding-top:24px;">
+          <div class="meta">— Blended take rate target</div>
+          <div style="font-family:Instrument Serif,serif;font-size:48px;line-height:1;margin-top:8px;">10% → £165</div>
+          <div class="small" style="margin-top:6px;">revenue per booked trip</div>
+        </div>
+
+        <div style="border-top:1px solid var(--line);margin-top:32px;padding-top:24px;">
+          <div class="meta">— Trips / active user / yr</div>
+          <div style="font-family:Instrument Serif,serif;font-size:48px;line-height:1;margin-top:8px;">2.5</div>
+          <div class="small" style="margin-top:6px;">half of the 5 / yr Millennial avg (Resonance)</div>
+        </div>
+
+        <div style="border-top:1px solid var(--line);margin-top:32px;padding-top:24px;">
+          <div class="meta">— Modeled ARPU</div>
+          <div style="font-family:Instrument Serif,serif;font-size:64px;line-height:1;margin-top:8px;color:var(--accent);">£412 <span style="font-size:24px;color:var(--muted);">/ yr</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:16px;">
+      <p class="cite" style="margin:0;">EMEA app CPI €2–4 (Mapendo, 2024). Industry CAC up 35% vs. LTV +4.5% (Adobe via PhocusWire). Modeled illustrations based on UK market benchmarks.</p>
+    </div>
+
+    <div class="chrome-bot">
+      <div>15 / 23</div>
+      <div>Required chart · Monetization curve</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 16 / GTM ============== -->
+<section data-screen-label="16 GTM">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 5 · Go‑To‑Market</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Acquire where pain &amp; intent are highest</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">High‑intent travel moments drive<br><span class="it">customer acquisition.</span></h2>
+
+    <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:64px;margin-top:24px;flex:1;">
+      <div>
+        <div class="meta">— Channels</div>
+        <ul style="list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--line);">
+          <li style="padding:18px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Influencer partnerships</span>
+            <span class="meta">High‑trust storytelling</span>
+          </li>
+          <li style="padding:18px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Social media inspiration</span>
+            <span class="meta">75% of Millennials influenced (Condor Ferries)</span>
+          </li>
+          <li style="padding:18px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Referral &amp; gifting loops</span>
+            <span class="meta">Built into the product</span>
+          </li>
+          <li style="padding:18px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Honeymoon &amp; group travel</span>
+            <span class="meta">High coordination pain</span>
+          </li>
+          <li style="padding:18px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Occasion‑based search</span>
+            <span class="meta">Birthdays · anniversaries · weddings</span>
+          </li>
+          <li style="padding:18px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+            <span style="font-family:Instrument Serif,serif;font-size:30px;">Premium &amp; milestone trips</span>
+            <span class="meta">High willingness to pay</span>
+          </li>
+        </ul>
+      </div>
+
+      <div style="border-left:1px solid var(--line);padding-left:48px;">
+        <div class="pill" style="border-color:var(--accent);color:var(--accent-ink);"><span style="width:8px;height:8px;background:var(--accent);border-radius:99px;"></span>Primary KPI · User acquisition</div>
+        <p class="lead" style="margin-top:24px;font-size:32px;">More users is the single most important KPI. Anything that brings users in the short term is integrated immediately.</p>
+
+        <div style="border-top:1px solid var(--line);margin-top:32px;padding-top:24px;">
+          <div class="meta">— Initial market</div>
+          <div style="font-family:Instrument Serif,serif;font-size:42px;line-height:1.05;margin-top:10px;">Europe · Balkans · t.b.d.</div>
+          <div class="small" style="margin-top:8px;">Open strategic question for founder decision before launch.</div>
+        </div>
+
+        <div style="border-top:1px solid var(--line);margin-top:32px;padding-top:18px;">
+          <p class="cite">83% of EU travelers use social platforms for travel inspiration (Mize). Mobile bookings +13.8%/yr in Europe. Industry CAC inflation +35% — Suitcase's viral loop turns this against incumbents.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>16 / 23</div>
+      <div>High‑intent moments · low‑CAC acquisition</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 17 / GIFTS ============== -->
+<section data-screen-label="17 Gifts as Growth">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 5 · Gifts as Growth</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Acquisition, monetization and float — in one purchase</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">Every gift is two users<br>and a <span class="it">float opportunity.</span></h2>
+
+    <div class="gift-flow">
+      <div class="node">
+        <div class="lb">— Buyer</div>
+        <div class="nm">Searches for an occasion gift</div>
+        <div class="meta">Birthday · anniversary · wedding · Christmas</div>
+      </div>
+      <div class="arr"><svg width="32" height="20" viewBox="0 0 32 20"><path d="M0,10 L28,10 M22,4 L28,10 L22,16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+      <div class="node">
+        <div class="lb">— Purchase</div>
+        <div class="nm">Buys a Suitcase trip‑gift</div>
+        <div class="meta">User #1 acquired · paid up front</div>
+      </div>
+      <div class="arr"><svg width="32" height="20" viewBox="0 0 32 20"><path d="M0,10 L28,10 M22,4 L28,10 L22,16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+      <div class="node float">
+        <div class="lb">— Float period</div>
+        <div class="nm">Held across the wait window</div>
+        <div class="meta">Suitcase earns the spread until activation</div>
+      </div>
+      <div class="arr"><svg width="32" height="20" viewBox="0 0 32 20"><path d="M0,10 L28,10 M22,4 L28,10 L22,16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+      <div class="node gain">
+        <div class="lb">— Activation</div>
+        <div class="nm">Recipient enters Suitcase</div>
+        <div class="meta">User #2 acquired · zero CAC</div>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;border-top:1px solid var(--line);padding-top:24px;">
+      <div>
+        <div class="meta">— Experience gift market</div>
+        <div style="font-family:Instrument Serif,serif;font-size:42px;line-height:1;margin-top:8px;">$133B → $199B</div>
+        <div class="cite" style="margin-top:6px;">Deep Market Insights, 6.91% CAGR</div>
+      </div>
+      <div>
+        <div class="meta">— Europe share of experience gifting</div>
+        <div style="font-family:Instrument Serif,serif;font-size:42px;line-height:1;margin-top:8px;">39% global</div>
+        <div class="cite" style="margin-top:6px;">Largest region · Arizton</div>
+      </div>
+      <div>
+        <div class="meta">— UK wedding gift flow</div>
+        <div style="font-family:Instrument Serif,serif;font-size:42px;line-height:1;margin-top:8px;">£8,640 / wedding</div>
+        <div class="cite" style="margin-top:6px;">£108 × 80 guests · Starling Bank, 2024</div>
+      </div>
+      <div>
+        <div class="meta">— Milestone gifting in 2026</div>
+        <div style="font-family:Instrument Serif,serif;font-size:42px;line-height:1;margin-top:8px;">66% globally</div>
+        <div class="cite" style="margin-top:6px;">Plan a milestone trip for someone else · Amex</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>17 / 23</div>
+      <div>Two users · one purchase · float in between</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 18 / GROUP TRAVEL ============== -->
+<section data-screen-label="18 Group Travel">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 5 · Group Travel</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>A built‑in growth loop, by design</div>
+    <h2 class="title" style="margin-top:32px;max-width:1660px;">One group trip, <span class="it">N new users.</span></h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:64px;margin-top:24px;flex:1;">
+      <div style="position:relative;">
+        <svg viewBox="0 0 540 540" style="width:100%;height:auto;display:block;">
+          <g stroke="#0B1220" stroke-width="1" stroke-dasharray="3 5" fill="none">
+            <line x1="270" y1="270" x2="60" y2="80"/>
+            <line x1="270" y1="270" x2="270" y2="40"/>
+            <line x1="270" y1="270" x2="480" y2="80"/>
+            <line x1="270" y1="270" x2="510" y2="270"/>
+            <line x1="270" y1="270" x2="480" y2="460"/>
+            <line x1="270" y1="270" x2="270" y2="500"/>
+            <line x1="270" y1="270" x2="60" y2="460"/>
+            <line x1="270" y1="270" x2="30" y2="270"/>
+          </g>
+          <g fill="#0B1220">
+            <circle cx="60" cy="80" r="22"/>
+            <circle cx="270" cy="40" r="22"/>
+            <circle cx="480" cy="80" r="22"/>
+            <circle cx="510" cy="270" r="22"/>
+            <circle cx="480" cy="460" r="22"/>
+            <circle cx="270" cy="500" r="22"/>
+            <circle cx="60" cy="460" r="22"/>
+            <circle cx="30" cy="270" r="22"/>
+          </g>
+          <circle cx="270" cy="270" r="64" fill="#E8643A"/>
+          <text x="270" y="266" text-anchor="middle" font-family="Instrument Serif" font-style="italic" font-size="22" fill="#0B1220">Buyer</text>
+          <text x="270" y="290" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#0B1220" letter-spacing="2">CENTRAL NODE</text>
+          <g font-family="JetBrains Mono" font-size="11" fill="#7A7669" letter-spacing="2" text-anchor="middle">
+            <text x="60" y="48">NEW USER</text>
+            <text x="270" y="14">NEW USER</text>
+            <text x="480" y="48">NEW USER</text>
+            <text x="510" y="240">NEW USER</text>
+            <text x="480" y="500">NEW USER</text>
+            <text x="270" y="540">NEW USER</text>
+            <text x="60" y="500">NEW USER</text>
+            <text x="30" y="240">NEW USER</text>
+          </g>
+        </svg>
+        <p class="cite" style="text-align:center;margin-top:12px;">Group = N − 1 new users per booking, automatically.</p>
+      </div>
+
+      <div>
+        <div class="meta">— Live example · wedding registry</div>
+        <div class="registry">
+          <div class="rrow head">
+            <div class="c">Day</div><div class="c">Location</div><div class="c">Category</div><div class="c">Purchaser</div><div class="c">Comment</div>
+          </div>
+          <div class="rrow">
+            <div class="c">Day 1</div>
+            <div class="c">Lisbon · Bairro Alto</div>
+            <div class="c cat">Welcome dinner</div>
+            <div class="c">Aunt Lara</div>
+            <div class="c">"For all the drunk flights we had together."</div>
+          </div>
+          <div class="rrow">
+            <div class="c">Day 2</div>
+            <div class="c">Sintra</div>
+            <div class="c cat">Day excursion</div>
+            <div class="c">The cousins</div>
+            <div class="c">"Don't get lost on the way back."</div>
+          </div>
+          <div class="rrow">
+            <div class="c">Day 3</div>
+            <div class="c">Cascais</div>
+            <div class="c cat">Boat charter</div>
+            <div class="c">Dad &amp; Mom</div>
+            <div class="c">"Tell the captain to behave."</div>
+          </div>
+          <div class="rrow">
+            <div class="c">Day 4</div>
+            <div class="c">Lisbon · Belém</div>
+            <div class="c cat">Tasting menu</div>
+            <div class="c">Best man</div>
+            <div class="c">"You owe us toasts. All of them."</div>
+          </div>
+          <div class="rrow">
+            <div class="c">Day 5</div>
+            <div class="c">Comporta</div>
+            <div class="c cat">Hotel · 2 nights</div>
+            <div class="c">Bridesmaids</div>
+            <div class="c">"Sleep in. You'll need it."</div>
+          </div>
+        </div>
+        <p class="small" style="margin-top:18px;max-width:760px;">Each line item is a guest contribution and a new Suitcase user. Group travel is simultaneously a product feature and a viral loop — high coordination pain, high emotional stakes, ideal Suitcase use case.</p>
+        <p class="cite" style="margin-top:12px;">76% of Gen Z + Millennials plan solo or group trips in 2025 (Statista). Viral K‑factor target: ≥1.0 from gifting + groups alone, before paid marketing.</p>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>18 / 23</div>
+      <div>Product feature = growth loop</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 19 / ROADMAP ============== -->
+<section data-screen-label="19 Rollout Roadmap">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 5 · Rollout</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>Four phases · unlocking forward</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">A phased rollout builds toward<br>full <span class="it">travel orchestration.</span></h2>
+
+    <div class="roadmap">
+      <div class="rd">
+        <div class="ph">Phase 01 · Foundation</div>
+        <div class="nm">Core orchestration MVP</div>
+        <div class="row"><div class="lb">Capabilities</div><div class="v">Multi‑service itineraries · unified booking · budget‑locked planning</div></div>
+        <div class="row"><div class="lb">Integrations</div><div class="v">Flights · accommodation · dining</div></div>
+        <div class="row"><div class="lb">Monetization</div><div class="v">Booking commissions · ads</div></div>
+        <div class="row"><div class="lb">Stage</div><div class="v">Consumer launch · Europe</div></div>
+      </div>
+      <div class="rd">
+        <div class="ph">Phase 02 · Intelligence</div>
+        <div class="nm">AI &amp; viral loops</div>
+        <div class="row"><div class="lb">Capabilities</div><div class="v">Preference learning · gifts · group split · on‑trip re‑routing</div></div>
+        <div class="row"><div class="lb">Integrations</div><div class="v">Mobility · activities · payments float</div></div>
+        <div class="row"><div class="lb">Monetization</div><div class="v">Premium subscription · float · assurance</div></div>
+        <div class="row"><div class="lb">Stage</div><div class="v">Network effects switch on</div></div>
+      </div>
+      <div class="rd">
+        <div class="ph">Phase 03 · Marketplace</div>
+        <div class="nm">Infrastructure layer</div>
+        <div class="row"><div class="lb">Capabilities</div><div class="v">Verified vendor network · partner programs · loyalty</div></div>
+        <div class="row"><div class="lb">Integrations</div><div class="v">State tourism agencies · loyalty programs · co‑brands</div></div>
+        <div class="row"><div class="lb">Monetization</div><div class="v">Tourism partnerships · placement · partnerships</div></div>
+        <div class="row"><div class="lb">Stage</div><div class="v">Suitcase becomes a marketplace</div></div>
+      </div>
+      <div class="rd future">
+        <div class="ph" style="color:var(--accent-ink);">Phase 04 · Suitcase 2.0</div>
+        <div class="nm">B2B travel infrastructure</div>
+        <div class="row"><div class="lb">Capabilities</div><div class="v">Auto travel orders · receipts capture · expense reports</div></div>
+        <div class="row"><div class="lb">Integrations</div><div class="v">ERP · accounting · enterprise SSO</div></div>
+        <div class="row"><div class="lb">Monetization</div><div class="v">B2B SaaS · API licensing</div></div>
+        <div class="row"><div class="lb">Stage</div><div class="v">From consumer app to infrastructure</div></div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>19 / 23</div>
+      <div>Required chart · Product evolution roadmap</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 20 / CATEGORY THESIS ============== -->
+<section data-screen-label="20 Category Thesis">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 6 · Category Thesis</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>The next decade of travel</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">The next travel leader will own<br><span class="it">coordination — not inventory.</span></h2>
+
+    <div class="split">
+      <div class="side">
+        <div class="lb">— 2000 → 2020</div>
+        <div class="h">OTAs won the inventory wars.</div>
+        <div class="logos">Booking.com<br>Expedia<br>Skyscanner<br>Kayak<br>Airbnb</div>
+        <p class="cite" style="margin-top:32px;">68.1% of online booking share — a saturated, defended category. (FMI, 2025)</p>
+      </div>
+      <div class="vline"></div>
+      <div class="side right">
+        <div class="lb">— 2024 → 203X</div>
+        <div class="h">The next decade is coordination.</div>
+        <div class="logos">Suitcase</div>
+        <p class="cite" style="margin-top:32px;color:var(--accent-ink);">AI‑in‑Travel growing at 36% CAGR — the underlying enabler. CAC up 35%; the incumbents are already paying more for the same user.</p>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <p class="lead" style="border-top:1px solid var(--line);padding-top:24px;max-width:1700px;">Category creation, not feature competition. The economics of coordination — recurring engagement, viral loops, embedded float — favor a layer above inventory.</p>
+
+    <div class="chrome-bot">
+      <div>20 / 23</div>
+      <div>Inventory was 2000–2020 · coordination is now</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 21 / PLATFORM VISION ============== -->
+<section data-screen-label="21 Platform Vision">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 6 · Platform Vision</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>The intelligence layer above travel</div>
+    <h2 class="title" style="margin-top:32px;max-width:1700px;">Suitcase becomes the intelligence layer<br>above <span class="it">global travel.</span></h2>
+
+    <div class="layer-stack" style="margin-top:48px;">
+      <div class="layer top">
+        <div>
+          <div class="l-lab">— Top · the traveler</div>
+          <div class="l-h" style="color:var(--cream);">Receives one continuous experience.</div>
+        </div>
+        <div class="l-r" style="color:#A9A496;">One app · one budget · one journey</div>
+      </div>
+      <div class="layer" style="background:var(--accent);border-color:var(--accent);">
+        <div>
+          <div class="l-lab" style="color:var(--accent-ink);">— Middle · Suitcase</div>
+          <div class="l-h" style="color:var(--ink);font-style:italic;">Coordination &amp; intelligence layer.</div>
+        </div>
+        <div class="l-r" style="color:var(--ink);">AI assistant · predictive coordination · embedded infra · loyalty graph</div>
+      </div>
+      <div class="layer">
+        <div>
+          <div class="l-lab">— Bottom · global inventory</div>
+          <div class="l-h">Suppliers, OTAs, vendors.</div>
+        </div>
+        <div class="l-r">Booking · Expedia · Airbnb · Uber · Klook · OpenTable · airlines · hotels</div>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;border-top:1px solid var(--line);padding-top:24px;">
+      <div>
+        <div class="meta">— AI assistant</div>
+        <div class="body" style="margin-top:8px;">Travel planned in plain language, end‑to‑end.</div>
+      </div>
+      <div>
+        <div class="meta">— Predictive coordination</div>
+        <div class="body" style="margin-top:8px;">Anticipated delays, bookings, swaps.</div>
+      </div>
+      <div>
+        <div class="meta">— Consumer infrastructure</div>
+        <div class="body" style="margin-top:8px;">Embedded in payments, calendars, messaging.</div>
+      </div>
+      <div>
+        <div class="meta">— Loyalty ecosystem</div>
+        <div class="body" style="margin-top:8px;">A unified graph across vendors and currencies.</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>21 / 23</div>
+      <div>Infrastructure‑level positioning</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 22 / CLOSING ============== -->
+<section data-screen-label="22 Closing" class="closing">
+  <div class="inner">
+    <div class="top" style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="brand-mark"><span class="logo"></span><span class="name" style="font-size:24px;color:var(--cream);">Suitcase</span></div>
+      <div class="meta" style="color:#A9A496;text-align:right;">22 / 23 · Closing</div>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="color:#A9A496;"><span class="dot"></span>The deck, in one line</div>
+      <h2 style="margin-top:36px;">Building the coordination layer<br>for <span class="it">global travel.</span></h2>
+      <div class="tag">Travel like a suitcase. Wherever you go, no brainer.</div>
+    </div>
+
+    <div>
+      <div class="recap">
+        <span>— 01<b>Fragmentation</b></span>
+        <span>— 02<b>Emotional pain</b></span>
+        <span>— 03<b>Coordination gap</b></span>
+        <span>— 04<b>Scalable opportunity</b></span>
+        <span>— 05<b>Monetization logic</b></span>
+        <span>— 06<b>Long‑term vision</b></span>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:48px;">
+        <div class="meta-block" style="font-family:JetBrains Mono,monospace;font-size:18px;color:#A9A496;letter-spacing:.12em;text-transform:uppercase;line-height:1.7;">
+          <div>Contact</div>
+          <div style="color:var(--cream);font-weight:500;">—— founders@suitcase.travel</div>
+          <div style="color:var(--cream);font-weight:500;">—— suitcase.travel</div>
+        </div>
+        <div class="meta-block" style="font-family:JetBrains Mono,monospace;font-size:18px;color:#A9A496;letter-spacing:.12em;text-transform:uppercase;line-height:1.7;text-align:right;">
+          <div>Stage</div>
+          <div style="color:var(--cream);font-weight:500;">—— Pre‑seed · 2026</div>
+          <div style="color:var(--accent);">—— Bold · visionary · inevitable</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 23 / SUITCASE 2.0 ============== -->
+<section data-screen-label="23 Suitcase 2.0">
+  <div class="slide">
+    <div class="chrome-top">
+      <div class="brand-mark"><span class="logo"></span><span class="name">Suitcase</span></div>
+      <div>§ 7 · Suitcase 2.0</div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:32px;"><span class="dot"></span>From personal orchestration to enterprise infrastructure</div>
+    <h2 class="title" style="margin-top:32px;max-width:1740px;">Suitcase 2.0 — from personal orchestration<br>to <span class="it">business travel infrastructure.</span></h2>
+
+    <div class="two-zero">
+      <div class="card">
+        <div class="v">— Suitcase 1.0 · today</div>
+        <h3>Consumer orchestration.</h3>
+        <ul>
+          <li>Multi‑service itineraries for individuals, couples, families and groups.</li>
+          <li>Gifts, group split, on‑trip re‑routing.</li>
+          <li>Booking commissions, ads, premium, float, assurance, partnerships.</li>
+          <li>Built and proven before the B2B narrative is opened.</li>
+        </ul>
+      </div>
+      <div class="card right">
+        <div class="v">— Suitcase 2.0 · the next chapter</div>
+        <h3>Enterprise travel infrastructure.</h3>
+        <ul>
+          <li>Travel receipts captured and digitized automatically during the trip.</li>
+          <li>Travel orders (<i>putni nalozi</i>) auto‑generated for every business trip.</li>
+          <li>Employee expense reports compiled and routed straight to finance.</li>
+          <li>End‑to‑end automation between employee, manager and accounting.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex-spacer"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:48px;border-top:1px solid var(--line);padding-top:24px;">
+      <div>
+        <div class="meta">— Strategic shift</div>
+        <div class="body" style="margin-top:8px;">Consumer app → enterprise infrastructure.</div>
+      </div>
+      <div>
+        <div class="meta">— Revenue stack</div>
+        <div class="body" style="margin-top:8px;">Recurring B2B SaaS on top of consumer monetization.</div>
+      </div>
+      <div>
+        <div class="meta">— Moat</div>
+        <div class="body" style="margin-top:8px;">Deep accounting / ERP integrations create switching cost.</div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <div>23 / 23</div>
+      <div>The inevitable next chapter</div>
+    </div>
+  </div>
+</section>
+
+</deck-stage>
+
+</body>
+</html>
